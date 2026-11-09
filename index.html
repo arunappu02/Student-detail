@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Profile Details</title>
+<style>
+  :root{--ink:#14263a;--muted:#5d6b7a;--line:#d5dde5;--bg:#f3f6f9;--accent:#0b6e8a;--card:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.7rem;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 24px}
+  form{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:24px}
+  fieldset{border:0;padding:0;margin:0 0 24px}
+  legend{font-weight:700;font-size:1.05rem;padding:0 0 10px;border-bottom:2px solid var(--accent);width:100%;margin-bottom:14px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .full{grid-column:1/-1}
+  label{display:block;font-size:.9rem;font-weight:600;margin-bottom:4px}
+  input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;font:inherit;background:#fff}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+  input[readonly]{background:#eef2f6}
+  button{background:var(--accent);color:#fff;border:0;border-radius:6px;padding:12px 28px;font:inherit;font-weight:600;cursor:pointer}
+  button:disabled{opacity:.6;cursor:wait}
+  #msg{margin-top:14px;font-weight:600}
+  .ok{color:#17703a}.err{color:#b3261e}
+  .hint{font-size:.8rem;color:var(--muted);margin-top:3px}
+  @media(max-width:600px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Student Profile Details</h1>
+  <p class="sub">Fill in your details and upload your CV. Our counsellor will contact you.</p>
+
+  <form id="f">
+    <fieldset>
+      <legend>Personal details</legend>
+      <div class="grid">
+        <div><label for="name">Name *</label><input id="name" name="Name" required></div>
+        <div><label for="number">Number *</label><input id="number" name="Number" type="tel" required></div>
+        <div><label for="dob">Date of birth *</label><input id="dob" name="Date of birth" type="date" required></div>
+        <div><label for="age">Age</label><input id="age" name="Age" readonly></div>
+        <div><label for="email">Email ID *</label><input id="email" name="Email ID" type="email" required></div>
+        <div><label for="place">Place *</label><input id="place" name="Place" required></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Education</legend>
+      <div class="grid">
+        <div class="full"><label for="qual">Highest qualification *</label><select id="qual" name="Highest qualification" required><option value="">Select</option><option>10th</option><option>12th</option><option>Diploma</option><option>Graduate</option><option>PG</option></select></div>
+        <div><label for="y10">10th pass-out year</label><input id="y10" name="10th pass-out year" inputmode="numeric" maxlength="4"></div>
+        <div><label for="p10">10th percentage</label><input id="p10" name="10th percentage"></div>
+        <div><label for="y12">12th pass-out year</label><input id="y12" name="12th pass-out year" inputmode="numeric" maxlength="4"></div>
+        <div><label for="p12">12th percentage</label><input id="p12" name="12th percentage"></div>
+        <div class="full"><label for="s12">12th stream</label>
+          <select id="s12" name="12th stream"><option value="">Select</option><option>Science</option><option>Commerce</option><option>Humanities</option><option>Other</option></select></div>
+        <div class="full"><label for="work">Work experience, if any</label><textarea id="work" name="Work experience" rows="2"></textarea></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Study plans</legend>
+      <div class="grid">
+        <div><label for="country">Interested country</label><input id="country" name="Interested country"></div>
+        <div><label for="course">Interested course</label><select id="course" name="Interested course" required><option value="">Select</option><option>Degree</option><option>Diploma</option><option>PG Diploma</option><option>Masters</option><option>Others</option></select></div>
+        <div><label for="intake">Preferred intake</label><input id="intake" name="Preferred intake" placeholder="e.g. Jan 2027"></div>
+        <div><label for="fund">Funding</label>
+          <select id="fund" name="Funding"><option value="">Select</option><option>Self funded</option><option>Education loan</option><option>Scholarship</option><option>Not decided</option></select></div>
+        <div class="full"><label for="ielts">Language proficiency certificates, if any (IELTS)</label><input id="ielts" name="Language proficiency" placeholder="e.g. IELTS 6.5"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Upload CV</legend>
+      <label for="cv">CV file *</label>
+      <input id="cv" type="file" accept=".pdf,.doc,.docx" required>
+      <div class="hint">PDF or Word, maximum 5 MB.</div>
+    </fieldset>
+
+    <button id="btn" type="submit">Submit details</button>
+    <div id="msg" role="status"></div>
+  </form>
+</div>
+
+<script>
+// 1) Paste your Google Apps Script Web App URL here
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwOkdhHKZughz1eMRRpApKOB3ZkGurO9zdh3c9FTr4WZIj92U5mx5JHBvALJzAeOnU/exec";
+
+const f = document.getElementById("f"), msg = document.getElementById("msg"), btn = document.getElementById("btn");
+
+document.getElementById("dob").addEventListener("change", e => {
+  const d = new Date(e.target.value); if (isNaN(d)) return;
+  const t = new Date(); let a = t.getFullYear() - d.getFullYear();
+  if (t < new Date(t.getFullYear(), d.getMonth(), d.getDate())) a--;
+  document.getElementById("age").value = a;
+});
+
+const toBase64 = file => new Promise((res, rej) => {
+  const r = new FileReader();
+  r.onload = () => res(r.result.split(",")[1]);
+  r.onerror = () => rej(new Error("Could not read file"));
+  r.readAsDataURL(file);
+});
+
+f.addEventListener("submit", async e => {
+  e.preventDefault();
+  const file = document.getElementById("cv").files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { msg.className = "err"; msg.textContent = "CV is larger than 5 MB."; return; }
+  btn.disabled = true; msg.className = ""; msg.textContent = "Submitting...";
+  try {
+    const data = {};
+    new FormData(f).forEach((v, k) => { if (!(v instanceof File)) data[k] = v; });
+    data["Age"] = document.getElementById("age").value;
+    data.cvName = file.name;
+    data.cvType = file.type || "application/octet-stream";
+    data.cvBase64 = await toBase64(file);
+    // text/plain avoids the CORS preflight that Apps Script cannot answer
+    const r = await fetch(SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || "Failed");
+    f.reset(); msg.className = "ok"; msg.textContent = "Details submitted. We will contact you soon.";
+  } catch (err) {
+    msg.className = "err"; msg.textContent = "Could not submit. Please try again. (" + err.message + ")";
+  } finally { btn.disabled = false; }
+});
+</script>
+</body>
+</html>
