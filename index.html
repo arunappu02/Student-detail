@@ -5,48 +5,100 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Student Profile Details</title>
 <style>
-  :root{--ink:#14263a;--muted:#5d6b7a;--line:#d5dde5;--bg:#f3f6f9;--accent:#0b6e8a;--card:#fff}
+  :root{
+    --navy:#12355b; --navy-dark:#0b2240; --gold:#e0a526; --gold-dark:#c78f14;
+    --ink:#17212b; --muted:#5f6b78; --line:#d6dde5; --bg:#f5f7fa; --card:#fff;
+  }
   *{box-sizing:border-box}
-  body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
-  .wrap{max-width:760px;margin:0 auto;padding:32px 16px 64px}
-  h1{font-size:1.7rem;margin:0 0 4px}
-  .sub{color:var(--muted);margin:0 0 24px}
-  form{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:24px}
-  fieldset{border:0;padding:0;margin:0 0 24px}
-  legend{font-weight:700;font-size:1.05rem;padding:0 0 10px;border-bottom:2px solid var(--accent);width:100%;margin-bottom:14px}
+  html,body{margin:0}
+  body{font-family:"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+
+  .page{display:grid;grid-template-columns:minmax(300px,2fr) 3fr;min-height:100vh}
+
+  /* Left: image panel with logo */
+  .side{
+    position:sticky;top:0;height:100vh;
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:32px;color:#fff;
+    background:
+      linear-gradient(180deg,rgba(11,34,64,.55) 0%,rgba(11,34,64,.88) 100%),
+      url("hero.jpg") center/cover no-repeat,
+      var(--navy-dark);
+  }
+  .logo-chip{align-self:flex-start;background:#fff;border-radius:10px;padding:8px 14px;display:flex;align-items:center}
+  .logo-chip img{display:block;height:46px;width:auto;max-width:200px}
+  .side h1{font-size:2rem;line-height:1.2;margin:0 0 10px}
+  .side p{margin:0;color:#dbe5f0;max-width:34ch}
+  .side .bar{width:56px;height:4px;background:var(--gold);border-radius:2px;margin-bottom:16px}
+
+  /* Right: form */
+  .main{padding:40px 32px 64px;display:flex;justify-content:center}
+  form{width:100%;max-width:700px}
+  .form-head{margin-bottom:22px}
+  .form-head h2{margin:0 0 4px;font-size:1.5rem}
+  .form-head p{margin:0;color:var(--muted)}
+
+  fieldset{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:18px 20px 20px;margin:0 0 18px}
+  legend{font-weight:700;padding:0 8px;color:var(--navy)}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .full{grid-column:1/-1}
-  label{display:block;font-size:.9rem;font-weight:600;margin-bottom:4px}
-  input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;font:inherit;background:#fff}
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+  label{display:block;font-size:.88rem;font-weight:600;margin-bottom:4px}
+  input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;font:inherit;background:#fff;color:var(--ink)}
+  input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--navy);outline-offset:1px}
   input[readonly]{background:#eef2f6}
-  button{background:var(--accent);color:#fff;border:0;border-radius:6px;padding:12px 28px;font:inherit;font-weight:600;cursor:pointer}
+  .hint{font-size:.8rem;color:var(--muted);margin-top:4px}
+
+  button{background:var(--gold);color:#1d1403;border:0;border-radius:6px;padding:13px 30px;font:inherit;font-weight:700;cursor:pointer}
+  button:hover{background:var(--gold-dark)}
   button:disabled{opacity:.6;cursor:wait}
   #msg{margin-top:14px;font-weight:600}
   .ok{color:#17703a}.err{color:#b3261e}
-  .hint{font-size:.8rem;color:var(--muted);margin-top:3px}
-  @media(max-width:600px){.grid{grid-template-columns:1fr}}
+
+  /* Tablet & phone: image becomes a top banner */
+  @media(max-width:900px){
+    .page{grid-template-columns:1fr}
+    .side{position:relative;height:auto;min-height:230px;padding:22px}
+    .side h1{font-size:1.45rem}
+    .main{padding:24px 16px 48px}
+  }
+  @media(max-width:600px){
+    .grid{grid-template-columns:1fr}
+    fieldset{padding:16px 14px 18px}
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Student Profile Details</h1>
-  <p class="sub">Fill in your details and upload your CV. Our counsellor will contact you.</p>
+<div class="page">
 
-  <form id="f">
-    <fieldset>
-      <legend>Personal details</legend>
-      <div class="grid">
-        <div><label for="name">Name *</label><input id="name" name="Name" required></div>
-        <div><label for="number">Number *</label><input id="number" name="Number" type="tel" required></div>
-        <div><label for="dob">Date of birth *</label><input id="dob" name="Date of birth" type="date" required></div>
-        <div><label for="age">Age</label><input id="age" name="Age" readonly></div>
-        <div><label for="email">Email ID *</label><input id="email" name="Email ID" type="email" required></div>
-        <div><label for="place">Place *</label><input id="place" name="Place" required></div>
+  <aside class="side">
+    <div class="logo-chip"><img src="logo.png" alt="Company logo"></div>
+    <div>
+      <div class="bar"></div>
+      <h1>Start your journey abroad</h1>
+      <p>Share your details and upload your CV. Our counsellor will contact you.</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <form id="f">
+      <div class="form-head">
+        <h2>Student Profile Details</h2>
+        <p>Fields marked * are required.</p>
       </div>
-    </fieldset>
 
-    <fieldset>
+      <fieldset>
+        <legend>Personal details</legend>
+        <div class="grid">
+          <div><label for="name">Name *</label><input id="name" name="Name" required></div>
+          <div><label for="number">Number *</label><input id="number" name="Number" type="tel" required></div>
+          <div><label for="dob">Date of birth *</label><input id="dob" name="Date of birth" type="date" required></div>
+          <div><label for="age">Age</label><input id="age" name="Age" readonly></div>
+          <div><label for="email">Email ID *</label><input id="email" name="Email ID" type="email" required></div>
+          <div><label for="place">Place *</label><input id="place" name="Place" required></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
       <legend>Education</legend>
       <div class="grid">
         <div class="full"><label for="qual">Highest qualification *</label><select id="qual" name="Highest qualification" required><option value="">Select</option><option>10th</option><option>12th</option><option>Diploma</option><option>Graduate</option><option>PG</option></select></div>
@@ -58,9 +110,9 @@
           <select id="s12" name="12th stream"><option value="">Select</option><option>Science</option><option>Commerce</option><option>Humanities</option><option>Other</option></select></div>
         <div class="full"><label for="work">Work experience, if any</label><textarea id="work" name="Work experience" rows="2"></textarea></div>
       </div>
-    </fieldset>
+      </fieldset>
 
-    <fieldset>
+      <fieldset>
       <legend>Study plans</legend>
       <div class="grid">
         <div><label for="country">Interested country</label><input id="country" name="Interested country"></div>
@@ -70,22 +122,24 @@
           <select id="fund" name="Funding"><option value="">Select</option><option>Self funded</option><option>Education loan</option><option>Scholarship</option><option>Not decided</option></select></div>
         <div class="full"><label for="ielts">Language proficiency certificates, if any (IELTS)</label><input id="ielts" name="Language proficiency" placeholder="e.g. IELTS 6.5"></div>
       </div>
-    </fieldset>
+      </fieldset>
 
-    <fieldset>
-      <legend>Upload CV</legend>
-      <label for="cv">CV file</label>
-      <input id="cv" type="file" accept=".pdf,.doc,.docx" required>
-      <div class="hint">PDF or Word, maximum 5 MB.</div>
-    </fieldset>
+      <fieldset>
+        <legend>Upload CV</legend>
+        <label for="cv">CV file</label>
+        <input id="cv" type="file" accept=".pdf,.doc,.docx" required>
+        <div class="hint">PDF or Word, maximum 5 MB.</div>
+      </fieldset>
 
-    <button id="btn" type="submit">Submit details</button>
-    <div id="msg" role="status"></div>
-  </form>
+      <button id="btn" type="submit">Submit details</button>
+      <div id="msg" role="status"></div>
+    </form>
+  </main>
+
 </div>
 
 <script>
-// 1) Paste your Google Apps Script Web App URL here
+// Paste your Google Apps Script Web App URL here
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwOkdhHKZughz1eMRRpApKOB3ZkGurO9zdh3c9FTr4WZIj92U5mx5JHBvALJzAeOnU/exec";
 
 const f = document.getElementById("f"), msg = document.getElementById("msg"), btn = document.getElementById("btn");
