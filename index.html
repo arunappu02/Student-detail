@@ -6,7 +6,7 @@
 <title>Student Profile Details</title>
 <style>
   :root{
-    --navy:#12355b; --navy-dark:#0b2240; --gold:#e0a526; --gold-dark:#c78f14;
+    --navy:#12355b; --navy-dark:#0b2240; --gold:#07697b; --gold-dark:#0db4d2;
     --ink:#17212b; --muted:#5f6b78; --line:#d6dde5; --bg:#f5f7fa; --card:#fff;
   }
   *{box-sizing:border-box}
@@ -22,10 +22,10 @@
     padding:32px;color:#fff;
     background:
       linear-gradient(180deg,rgba(11,34,64,.55) 0%,rgba(11,34,64,.88) 100%),
-      url("hero.jpg") center/cover no-repeat,
+      url("hero.webp") center/cover no-repeat,
       var(--navy-dark);
   }
-  .logo-chip{align-self:flex-start;background:#fff;border-radius:10px;padding:8px 14px;display:flex;align-items:center}
+  .logo-chip{align-self:flex-start;border-radius:10px;padding:8px 14px;display:flex;align-items:center}
   .logo-chip img{display:block;height:46px;width:auto;max-width:200px}
   .side h1{font-size:2rem;line-height:1.2;margin:0 0 10px}
   .side p{margin:0;color:#dbe5f0;max-width:34ch}
@@ -48,7 +48,7 @@
   input[readonly]{background:#eef2f6}
   .hint{font-size:.8rem;color:var(--muted);margin-top:4px}
 
-  button{background:var(--gold);color:#1d1403;border:0;border-radius:6px;padding:13px 30px;font:inherit;font-weight:700;cursor:pointer}
+  button{background:var(--gold);color:#ffffff;border:0;border-radius:6px;padding:13px 30px;font:inherit;font-weight:700;cursor:pointer}
   button:hover{background:var(--gold-dark)}
   button:disabled{opacity:.6;cursor:wait}
   #msg{margin-top:14px;font-weight:600}
@@ -71,7 +71,7 @@
 <div class="page">
 
   <aside class="side">
-    <div class="logo-chip"><img src="logo.png" alt="Company logo"></div>
+    <div class="logo-chip"><img src="AllPoints-Ltdw.svg" alt="AllPoints logo"></div>
     <div>
       <div class="bar"></div>
       <h1>Start your journey abroad</h1>
@@ -116,7 +116,7 @@
       <legend>Study plans</legend>
       <div class="grid">
         <div><label for="country">Interested country</label><input id="country" name="Interested country"></div>
-        <div><label for="course">Interested course</label><select id="course" name="Interested course" required><option value="">Select</option><option>Degree</option><option>Diploma</option><option>PG Diploma</option><option>Masters</option><option>Others</option></select></div>
+        <div><label for="course">Interested course *</label><select id="course" name="Interested course" required><option value="">Select</option><option>Degree</option><option>Diploma</option><option>PG Diploma</option><option>Masters</option><option>Others</option></select></div>
         <div><label for="intake">Preferred intake</label><input id="intake" name="Preferred intake" placeholder="e.g. Jan 2027"></div>
         <div><label for="fund">Funding</label>
           <select id="fund" name="Funding"><option value="">Select</option><option>Self funded</option><option>Education loan</option><option>Scholarship</option><option>Not decided</option></select></div>
@@ -127,7 +127,7 @@
       <fieldset>
         <legend>Upload CV</legend>
         <label for="cv">CV file</label>
-        <input id="cv" type="file" accept=".pdf,.doc,.docx" required>
+        <input id="cv" type="file" accept=".pdf,.doc,.docx">
         <div class="hint">PDF or Word, maximum 5 MB.</div>
       </fieldset>
 
@@ -161,17 +161,17 @@ const toBase64 = file => new Promise((res, rej) => {
 f.addEventListener("submit", async e => {
   e.preventDefault();
   const file = document.getElementById("cv").files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { msg.className = "err"; msg.textContent = "CV is larger than 5 MB."; return; }
+  if (file && file.size > 5 * 1024 * 1024) { msg.className = "err"; msg.textContent = "CV is larger than 5 MB."; return; }
   btn.disabled = true; msg.className = ""; msg.textContent = "Submitting...";
   try {
     const data = {};
     new FormData(f).forEach((v, k) => { if (!(v instanceof File)) data[k] = v; });
     data["Age"] = document.getElementById("age").value;
-    data.cvName = file.name;
-    data.cvType = file.type || "application/octet-stream";
-    data.cvBase64 = await toBase64(file);
-    // text/plain avoids the CORS preflight that Apps Script cannot answer
+    if (file) {
+      data.cvName = file.name;
+      data.cvType = file.type || "application/octet-stream";
+      data.cvBase64 = await toBase64(file);
+    }
     const r = await fetch(SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) });
     const j = await r.json();
     if (!j.ok) throw new Error(j.error || "Failed");
